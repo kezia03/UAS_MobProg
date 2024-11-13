@@ -3,6 +3,7 @@ import 'screens/landing_page.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/english_course_page.dart';
 
 void main() {
   runApp(const PolylingoApp());
@@ -26,6 +27,7 @@ class PolylingoApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
         '/home': (context) => const HomeScreen(),
+        '/english_course': (context) => EnglishCoursePage(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'english_course_page.dart'; // Import halaman tujuan
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -39,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(  
+              TextField(
                 decoration: InputDecoration(
                   hintText: 'Search Courses',
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -61,11 +62,16 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildCourseItem('Japanese', Icons.circle),
+              _buildCourseItem('Japanese', Icons.circle, onTap: () {}), // Tidak ada aksi
               const SizedBox(height: 10),
-              _buildCourseItem('English', Icons.circle),
+              _buildCourseItem('English', Icons.circle, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EnglishCoursePage()),
+                );
+              }),
               const SizedBox(height: 10),
-              _buildCourseItem('Spanish', Icons.circle),
+              _buildCourseItem('Spanish', Icons.circle, onTap: () {}), // Tidak ada aksi
             ],
           ),
         ),
@@ -85,34 +91,37 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCourseItem(String language, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
+  Widget _buildCourseItem(String language, IconData icon, {required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Icon(icon, color: const Color(0xFF4B61DD)),
             ),
-            child: Icon(icon, color: const Color(0xFF4B61DD)),
-          ),
-          const SizedBox(width: 15),
-          Text(
-            language,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
+            const SizedBox(width: 15),
+            Text(
+              language,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
