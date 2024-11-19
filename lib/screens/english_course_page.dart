@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'quiz_english.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'dart:io'; 
+import 'quiz_english.dart';
 
 class EnglishCoursePage extends StatefulWidget {
   @override
@@ -16,26 +17,31 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
       'title': 'Basic Vocabulary',
       'description': 'Build a strong foundation by learning essential vocabulary words that will help you understand basic ideas in your new language.',
       'icon': Icons.language,
+      'link': 'https://youtu.be/F30R0tDIXP0?si=-a8DMIbPN_Md52Sy'
+    },
+    {
+      'title': 'Greetings & Introductions',
+      'description': 'Learn essential phrases for greeting others and introducing yourself with confidence.',
+      'icon': Icons.handshake,
+      'link': 'https://youtu.be/sp3xU5WvRjA?si=eKb1iyXg1_rTPsZ6'
     },
     {
       'title': 'Basic Grammar',
       'description': 'Understand fundamental grammar rules to form correct sentences.',
       'icon': Icons.edit_note,
-    },
-    {
-      'title': 'Greetings & Introduction',
-      'description': 'Learn essential phrases for greeting others and introducing yourself with confidence.',
-      'icon': Icons.handshake,
+      'link': 'https://youtu.be/QXVzmzhxWWc?si=EMLHXzHJi7iOHVhv'
     },
     {
       'title': 'Pronunciation Tips',
       'description': 'Get helpful tips to improve your pronunciation and sound more natural.',
       'icon': Icons.record_voice_over,
+      'link': 'https://youtu.be/n4NVPg2kHv4?si=3oYZC_hIebAhB02r'
     },
     {
       'title': 'Quiz',
-      'description': 'Lets put your knowledge to the test!',
+      'description': 'Let’s put your knowledge to the test!',
       'icon': Icons.quiz,
+      'link': null
     },
   ];
 
@@ -60,91 +66,103 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
     });
   }
 
+  Future<void> openURLForMobile(String url) async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      try {
+        final Uri uri = Uri.parse(url);
+        if (Platform.isAndroid) {
+          await Process.run('am', ['start', '-a', 'android.intent.action.VIEW', '-d', uri.toString()]);
+        } else if (Platform.isIOS) {
+          await Process.run('open', [uri.toString()]);
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not open URL: $e')));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('This feature is only supported on mobile devices.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Hitung progress berdasarkan jumlah checkbox yang dicentang
     final completedCourses = checkedStatus.where((status) => status).length;
     final progress = completedCourses / courses.length;
 
     return Scaffold(
       body: Column(
         children: [
-          // Header
+          // Header (tetap sama)
           Container(
-          color: const Color(0xFF4B61DD), // Background biru
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Baris 1: Polylingo dan Ikon Favorit
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Polylingo',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white70,
+            color: const Color(0xFF4B61DD),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Polylingo',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white70,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.favorite_border, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Baris 2: Flag di kiri, lalu Arrow dan English di bawahnya
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Flag di kiri
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.asset(
-                        'assets/us_flag.png', // Path gambar bendera
-                        height: 32,
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context); // Kembali ke halaman sebelumnya
-                            },
-                            child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'English',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-
-              // Baris 3: Lesson dan Quiz Info
-              const Text(
-                '4 Lessons   ·   1 Quiz',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
+                    IconButton(
+                      icon: const Icon(Icons.favorite_border, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          'assets/us_flag.png',
+                          height: 32,
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'English',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '4 Lessons   ·   1 Quiz',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
           // Body
           Expanded(
             child: Container(
@@ -171,12 +189,21 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
                             onChecked: (value) {
                               updateProgress(value, index);
                             },
+                            link: courses[index]['link'],
+                            onQuizPressed: index == courses.length - 1
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => QuizPage()),
+                                    );
+                                  }
+                                : null,
+                            onOpenURL: openURLForMobile,
                           ),
                         );
                       },
                     ),
                   ),
-                  // Progress Bar
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     child: Column(
@@ -228,6 +255,7 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
         backgroundColor: Colors.white,
         selectedItemColor: const Color(0xFF4B61DD),
         unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
@@ -244,7 +272,10 @@ class CourseCard extends StatelessWidget {
   final String description;
   final IconData icon;
   final bool isChecked;
+  final String? link;
   final Function(bool) onChecked;
+  final VoidCallback? onQuizPressed;
+  final Function(String) onOpenURL;
 
   const CourseCard({
     required this.title,
@@ -252,6 +283,9 @@ class CourseCard extends StatelessWidget {
     required this.icon,
     required this.isChecked,
     required this.onChecked,
+    this.link,
+    this.onQuizPressed,
+    required this.onOpenURL,
   });
 
   @override
@@ -271,7 +305,6 @@ class CourseCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -285,42 +318,52 @@ class CourseCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFFA6C4E5)),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFA6C4E5),
+              ),
+            ),
           ),
           const SizedBox(height: 8),
-          Text(
-            description,
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              description,
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
           ),
-          const SizedBox(height: 16),
-          ElevatedButton(
+          const Spacer(),
+          Container(
+          width: double.infinity, // Lebar tombol mengikuti card
+          child:ElevatedButton(
             onPressed: () {
-              if (title == 'Quiz') {
-                // Jika title adalah Quiz, arahkan ke QuizPage
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => QuizPage()),
-                );
-              } else {
-                // Tambahkan logika untuk pelajaran lain jika diperlukan
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Start $title')),
-                );
+              if (link != null) {
+                onOpenURL(link!);
+              } else if (onQuizPressed != null) {
+                onQuizPressed!();
               }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue[100],
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
             child: const Text(
-              'Start',
-              style: TextStyle(color: Color(0xFF4B5ECE)),
+              'S t a r t',
+              style: TextStyle(
+                color: Color(0xFF4B5ECE),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                ),
+             ),
             ),
           ),
         ],
