@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'quiz_page.dart';
+import 'quiz_english.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class EnglishCoursePage extends StatefulWidget {

@@ -4,7 +4,7 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/english_course_page.dart';
-import 'screens/quiz_page.dart';
+import 'screens/quiz_english.dart';
 
 void main() {
   runApp(const PolylingoApp());
