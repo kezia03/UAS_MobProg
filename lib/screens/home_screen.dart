@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'english_course_page.dart'; // Import halaman tujuan
-import 'japanese_course_page.dart'; // Import halaman Japanese Course
+import 'english_course_page.dart'; 
+import 'japanese_course_page.dart';
+import 'spanish_course_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -77,7 +78,12 @@ class HomeScreen extends StatelessWidget {
                 );
               }),
               const SizedBox(height: 10),
-              _buildCourseItem('Spanish', Icons.circle, onTap: () {}), // Tidak ada aksi
+              _buildCourseItem('Spanish', Icons.circle, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SpanishCoursePage()),
+                );
+              }), 
             ],
           ),
         ),
