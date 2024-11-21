@@ -67,20 +67,24 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
   }
 
   Future<void> openURLForMobile(String url) async {
-    if (Platform.isAndroid || Platform.isIOS) {
-      try {
-        final Uri uri = Uri.parse(url);
-        if (Platform.isAndroid) {
-          await Process.run('am', ['start', '-a', 'android.intent.action.VIEW', '-d', uri.toString()]);
-        } else if (Platform.isIOS) {
-          await Process.run('open', [uri.toString()]);
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Could not open URL: $e')));
+    try {
+      final Uri uri = Uri.parse(url);
+      if (Platform.isAndroid) {
+        // Gunakan perintah `am start` untuk membuka URL di Android
+        await Process.run('am', ['start', '-a', 'android.intent.action.VIEW', '-d', uri.toString()]);
+      } else if (Platform.isIOS) {
+        // Gunakan perintah `open` untuk iOS
+        await Process.run('open', [uri.toString()]);
+      } else {
+        // Jika platform tidak didukung
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('This feature is only supported on Android and iOS.')),
+        );
       }
-    } else {
+    } catch (e) {
+      // Tampilkan pesan error jika URL gagal dibuka
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('This feature is only supported on mobile devices.')),
+        SnackBar(content: Text('Could not open URL: $e')),
       );
     }
   }

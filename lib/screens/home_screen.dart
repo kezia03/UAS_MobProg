@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'english_course_page.dart'; // Import halaman tujuan
+import 'japanese_course_page.dart'; // Import halaman Japanese Course
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -62,7 +63,12 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildCourseItem('Japanese', Icons.circle, onTap: () {}), // Tidak ada aksi
+              _buildCourseItem('Japanese', Icons.circle, onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JapaneseCoursePage()),
+                );
+              }),
               const SizedBox(height: 10),
               _buildCourseItem('English', Icons.circle, onTap: () {
                 Navigator.push(
