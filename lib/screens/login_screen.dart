@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
@@ -24,39 +25,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Function to handle login
   Future<void> _login() async {
-    try {
-      // Get Firestore instance
-      final firestore = FirebaseFirestore.instance;
+  try {
+    // Dapatkan email dan password yang dimasukkan
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
-      // Query Firestore for the user's email
-      final querySnapshot = await firestore
-          .collection('users')
-          .where('email', isEqualTo: _emailController.text.trim())
-          .get();
+    // Cobalah untuk login menggunakan Firebase Authentication
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      if (querySnapshot.docs.isNotEmpty) {
-        final userDoc = querySnapshot.docs.first;
-        final hashedPassword = _hashPassword(_passwordController.text.trim());
-
-        // Check if the hashed password matches the stored one
-        if (userDoc['password'] == hashedPassword) {
-          Navigator.pushReplacementNamed(context, '/home'); // Navigate to home on success
-        } else {
-          setState(() {
-            _errorMessage = 'Email or password is wrong';
-          });
-        }
-      } else {
-        setState(() {
-          _errorMessage = 'Email or password is wrong';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'An error occurred: ${e.toString()}';
-      });
-    }
+    // Jika berhasil login, arahkan ke halaman home
+    Navigator.pushReplacementNamed(context, '/home');
+  } catch (e) {
+    // Menangani kesalahan login
+    setState(() {
+      _errorMessage = 'Email or password is wrong';
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.pushNamed(context, '/verification'),
+                        onPressed: () => Navigator.pushNamed(context, '/forgotpassword'),
                         child: const Text(
                           "Forgot password?",
                           style: TextStyle(color: Color(0xFF4B61DD)),
