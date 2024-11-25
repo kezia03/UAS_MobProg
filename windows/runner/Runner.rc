@@ -90,12 +90,21 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
+<<<<<<< HEAD
             VALUE "FileDescription", "uasmoprogwilli" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "uasmoprogwilli" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "uasmoprogwilli.exe" "\0"
             VALUE "ProductName", "uasmoprogwilli" "\0"
+=======
+            VALUE "FileDescription", "uas_mobprog" "\0"
+            VALUE "FileVersion", VERSION_AS_STRING "\0"
+            VALUE "InternalName", "uas_mobprog" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
+            VALUE "OriginalFilename", "uas_mobprog.exe" "\0"
+            VALUE "ProductName", "uas_mobprog" "\0"
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

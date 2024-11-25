@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "uasmoprogwilli",
     "short_name": "uasmoprogwilli",
+=======
+    "name": "uas_mobprog",
+    "short_name": "uas_mobprog",
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
