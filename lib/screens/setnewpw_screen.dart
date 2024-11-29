@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+=======
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
 class SetNewPasswordScreen extends StatefulWidget {
   const SetNewPasswordScreen({super.key});
 

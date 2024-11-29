@@ -1,6 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="uasmoprogwilli"
+=======
+<<<<<<< HEAD
+        android:label="uasmoprogwilli"
+=======
+        android:label="uas_mobprog"
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -4,10 +4,23 @@ project(runner LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
 set(BINARY_NAME "uasmoprogwilli")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
 set(APPLICATION_ID "com.example.uasmoprogwilli")
+<<<<<<< HEAD
+=======
+=======
+set(BINARY_NAME "uas_mobprog")
+# The unique GTK application identifier for this application. See:
+# https://wiki.gnome.org/HowDoI/ChooseApplicationID
+set(APPLICATION_ID "com.example.uas_mobprog")
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
