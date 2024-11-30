@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'dart:io'; 
 import 'quiz_english.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EnglishCoursePage extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class EnglishCoursePage extends StatefulWidget {
 class _EnglishCoursePageState extends State<EnglishCoursePage> {
   int currentIndex = 0;
   late PageController _pageController;
+  List<Map<String, dynamic>> favoriteCourses = [];
+  late List<bool> checkedStatus;
 
   final List<Map<String, dynamic>> courses = [
     {
@@ -45,13 +48,13 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
     },
   ];
 
-  late List<bool> checkedStatus;
-
   @override
   void initState() {
     super.initState();
-    checkedStatus = List<bool>.filled(courses.length, false); // Semua checkbox awalnya tidak dicentang
-    _pageController = PageController(viewportFraction: 0.8, initialPage: currentIndex);
+    checkedStatus = List<bool>.filled(courses.length, false);
+    _pageController =
+        PageController(viewportFraction: 0.8, initialPage: currentIndex);
+    _loadProgress();
   }
 
   @override
@@ -60,31 +63,40 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
     super.dispose();
   }
 
+  Future<void> _loadProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      checkedStatus = List<bool>.generate(
+        courses.length,
+        (index) => prefs.getBool('english_course_$index') ?? false,
+      );
+    });
+    print('Loaded progress for English course: $checkedStatus'); 
+  }
+
+  Future<void> _saveProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    for (int i = 0; i < checkedStatus.length; i++) {
+      await prefs.setBool('english_course_$i', checkedStatus[i]);
+    }
+    print('Saved progress for English course: $checkedStatus'); 
+  }
+
   void updateProgress(bool isChecked, int index) {
     setState(() {
       checkedStatus[index] = isChecked;
     });
+    _saveProgress(); 
   }
 
   Future<void> openURLForMobile(String url) async {
-    try {
-      final Uri uri = Uri.parse(url);
-      if (Platform.isAndroid) {
-        // Gunakan perintah `am start` untuk membuka URL di Android
-        await Process.run('am', ['start', '-a', 'android.intent.action.VIEW', '-d', uri.toString()]);
-      } else if (Platform.isIOS) {
-        // Gunakan perintah `open` untuk iOS
-        await Process.run('open', [uri.toString()]);
-      } else {
-        // Jika platform tidak didukung
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This feature is only supported on Android and iOS.')),
-        );
-      }
-    } catch (e) {
-      // Tampilkan pesan error jika URL gagal dibuka
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      print('Cannot launch URL: $url');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not open URL: $e')),
+        SnackBar(content: Text('Could not launch URL: $url')),
       );
     }
   }
@@ -97,7 +109,6 @@ class _EnglishCoursePageState extends State<EnglishCoursePage> {
     return Scaffold(
       body: Column(
         children: [
-          // Header (tetap sama)
           Container(
             color: const Color(0xFF4B61DD),
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'dart:io'; // Untuk mendeteksi platform
 import 'quiz_japanese.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class JapaneseCoursePage extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class JapaneseCoursePage extends StatefulWidget {
 class _JapaneseCoursePageState extends State<JapaneseCoursePage> {
   int currentIndex = 0;
   late PageController _pageController;
+  List<Map<String, dynamic>> favoriteCourses = [];
+  late List<bool> checkedStatus;
 
   final List<Map<String, dynamic>> courses = [
     {
@@ -46,14 +49,13 @@ class _JapaneseCoursePageState extends State<JapaneseCoursePage> {
     },
   ];
 
-  late List<bool> checkedStatus;
-
   @override
   void initState() {
     super.initState();
     checkedStatus = List<bool>.filled(courses.length, false);
     _pageController =
         PageController(viewportFraction: 0.8, initialPage: currentIndex);
+    _loadProgress();
   }
 
   @override
@@ -62,35 +64,40 @@ class _JapaneseCoursePageState extends State<JapaneseCoursePage> {
     super.dispose();
   }
 
+  Future<void> _loadProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      checkedStatus = List<bool>.generate(
+        courses.length,
+        (index) => prefs.getBool('japanese_course_$index') ?? false,
+      );
+    });
+    print('Loaded progress for Japanese course: $checkedStatus');
+  }
+
+  Future<void> _saveProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    for (int i = 0; i < checkedStatus.length; i++) {
+      await prefs.setBool('japanese_course_$i', checkedStatus[i]);
+    }
+    print('Saved progress for Japanese course: $checkedStatus');
+  }
+
   void updateProgress(bool isChecked, int index) {
     setState(() {
       checkedStatus[index] = isChecked;
     });
+    _saveProgress();
   }
 
   Future<void> openURLForMobile(String url) async {
-    if (Platform.isAndroid || Platform.isIOS) {
-      try {
-        final Uri uri = Uri.parse(url);
-        if (Platform.isAndroid) {
-          await Process.run('am', [
-            'start',
-            '-a',
-            'android.intent.action.VIEW',
-            '-d',
-            uri.toString()
-          ]);
-        } else if (Platform.isIOS) {
-          await Process.run('open', [uri.toString()]);
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Could not open URL: $e')));
-      }
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
+      print('Cannot launch URL: $url');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('This feature is only supported on mobile devices.')),
+        SnackBar(content: Text('Could not launch URL: $url')),
       );
     }
   }
@@ -122,9 +129,21 @@ class _JapaneseCoursePageState extends State<JapaneseCoursePage> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.favorite_border,
-                          color: Colors.white),
-                      onPressed: () {},
+                      icon: Icon(
+                        favoriteCourses.contains(courses[currentIndex])
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (favoriteCourses.contains(courses[currentIndex])) {
+                            favoriteCourses.remove(courses[currentIndex]);
+                          } else {
+                            favoriteCourses.add(courses[currentIndex]);
+                          }
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -136,7 +155,7 @@ class _JapaneseCoursePageState extends State<JapaneseCoursePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.asset(
-                          'assets/jp_flag.png',
+                          'assets/japan_flag.png',
                           height: 32,
                         ),
                         const SizedBox(height: 8),
