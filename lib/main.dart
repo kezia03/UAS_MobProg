@@ -4,18 +4,15 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/favourites_screen.dart';
-import 'screens/forgotpw_screen.dart';
-import 'screens/profile_screen.dart';
 import 'screens/personal_screen.dart';
 import 'screens/accsecurity_screen.dart';
 import 'screens/about_screen.dart';
 import 'screens/appset_screen.dart';
 import 'screens/verification_screen.dart';
-import 'screens/english_course_page.dart';
-import 'screens/japanese_course_page.dart';
-import 'screens/spanish_course_page.dart';
+import 'screens/forgotpw_screen.dart';
 import 'screens/setnewpw_screen.dart';
 import 'screens/verifycodepw_screen.dart';
+import 'screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -24,6 +21,7 @@ void main() async {
 
   // Inisialisasi Firebase sebelum menjalankan aplikasi
   await Firebase.initializeApp();
+
 
   runApp(const PolylingoApp());
 }
@@ -66,37 +64,43 @@ class PolylingoApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/landing',
+      initialRoute: '/splash',
       routes: {
+        '/splash': (context) => const SplashScreen(),
         '/landing': (context) => const LandingPage(),
         '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignUpScreen(),
+        '/signup': (context) => const SignUpScreen(),        
         '/home': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-          print("Arguments received for /home: $args");
-          if (args == null || !args.containsKey('username')) {
-            throw Exception("Missing 'username' argument for /home route.");
-          }
-          return HomeScreen(username: args['username']);
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+          return HomeScreen(
+            username: args['username'],
+            email: args['email'],
+          );
         },
         '/favourites': (context) => const FavouritesScreen(),
-        '/english_course': (context) => EnglishCoursePage(),
-        '/japanese_course': (context) => JapaneseCoursePage(),
-        '/spanish_course': (context) => SpanishCoursePage(),
         '/personal': (context) => const PersonalScreen(),
+        '/accountSecurities': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+          if (args == null || !args.containsKey('email')) {
+            throw Exception("Email argument is required for this screen.");
+          }
+
+          return AccountSecuritiesScreen(
+            email: args['email'] ?? 'unknown@example.com', // Default jika null
+            phoneNumber: args['phoneNumber'], // Tetap nullable
+          );
+        },
+        '/about': (context) => const AboutScreen(),
         '/appSettings': (context) => const AppSetScreen(),
         '/verification': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>;
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           return VerificationScreen(
-            email: args['email'], 
+            email: args['email'],  // Passing email argument to VerificationScreen
           );
         },
         '/forgotpassword': (context) => const ForgotPasswordScreen(),
-        '/profile': (context) => const ProfileScreen(), 
-        '/accountSecurities': (context) => const AccountSecuritiesScreen(),
-        '/about': (context) => const AboutScreen(),
-                '/verify-code': (context) {
+        '/verify-code': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
           final email = args['email']; // Ambil nilai email dari Map
           return VerifyCodePWScreen(email: email); // Passing email ke VerifyCodePWScreen
