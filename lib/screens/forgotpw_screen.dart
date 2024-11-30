@@ -93,7 +93,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ElevatedButton(
               onPressed: _changePassword,
               style: ElevatedButton.styleFrom(
-                primary: Colors.red,
+                backgroundColor: Colors.red,
                 textStyle: TextStyle(fontSize: 16),
               ),
               child: Text('Change New Password'),
