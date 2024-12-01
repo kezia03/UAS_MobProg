@@ -78,7 +78,7 @@ class PolylingoApp extends StatelessWidget {
           );
         },
         '/favourites': (context) => const FavouritesScreen(),
-        '/personal': (context) => const PersonalScreen(),
+        '/personal': (context) => const PersonalInfoScreen(),
         '/accountSecurities': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
@@ -105,7 +105,7 @@ class PolylingoApp extends StatelessWidget {
           final email = args['email']; // Ambil nilai email dari Map
           return VerifyCodePWScreen(email: email); // Passing email ke VerifyCodePWScreen
         },
-        '/set-new-password': (context) => SetNewPasswordScreen(),
+        '/set-new-password': (context) => ChangePasswordPage(),
       },
       // Default page if the route does not exist
       onUnknownRoute: (settings) => MaterialPageRoute(
