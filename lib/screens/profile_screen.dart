@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:polylingo/screens/landing_page.dart';
-//import 'changepw_screen.dart';
+import 'changepw_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final String username;

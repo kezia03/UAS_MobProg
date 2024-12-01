@@ -5,7 +5,6 @@ class AppSetScreen extends StatefulWidget {
   const AppSetScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AppSetScreenState createState() => _AppSetScreenState();
 }
 
@@ -106,11 +105,9 @@ class _AppSetScreenState extends State<AppSetScreen> {
     try {
       await _auth.signOut();
       // Navigate to login screen or home page
-      // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacementNamed('/login');
     } catch (e) {
       // Handle logout error
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error logging out: $e')),
       );

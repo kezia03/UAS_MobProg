@@ -80,7 +80,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     }
   }
 
-  void _showEditDialog(String label, String currentValue, ValueChanged<String> onChanged) {
+  void _showEditDialog(String label, String currentValue, ValueChanged<String> onChanged,
+      {TextInputType keyboardType = TextInputType.text}) {
     TextEditingController controller = TextEditingController(text: currentValue);
 
     showDialog(
@@ -89,6 +90,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         title: Text('Edit $label'),
         content: TextField(
           controller: controller,
+          keyboardType: keyboardType, // Keyboard type customization
           decoration: InputDecoration(hintText: 'Enter new $label'),
         ),
         actions: [
@@ -108,6 +110,49 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     );
   }
 
+  void _showDatePicker() async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (selectedDate != null) {
+      setState(() {
+        dateOfBirth = "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+      });
+    }
+  }
+
+  void _showGenderPicker() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Gender'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('Laki-Laki'),
+              onTap: () {
+                setState(() => gender = 'Laki-Laki');
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: const Text('Perempuan'),
+              onTap: () {
+                setState(() => gender = 'Perempuan');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,8 +166,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 alignment: Alignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.white,
+                    radius: 55,
+                    backgroundColor: Colors.grey.shade300,
                     backgroundImage: _profileImageUrl != null
                         ? NetworkImage(_profileImageUrl!) as ImageProvider
                         : const AssetImage('assets/placeholder.png'),
@@ -132,9 +177,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     right: 0,
                     child: CircleAvatar(
                       backgroundColor: Colors.blueAccent,
-                      radius: 18,
+                      radius: 20,
                       child: IconButton(
-                        icon: const Icon(Icons.camera_alt, color: Colors.white, size: 16),
+                        icon: const Icon(Icons.camera_alt, color: Colors.white),
                         onPressed: _pickImage,
                       ),
                     ),
@@ -142,7 +187,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             _buildEditableField(
               label: 'Name',
               value: name.isEmpty ? 'Please enter your name' : name,
@@ -150,6 +195,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 setState(() => name = newValue);
               }),
             ),
+            const Divider(),
             _buildEditableField(
               label: 'Email',
               value: email.isEmpty ? 'Please enter your email' : email,
@@ -157,26 +203,25 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 setState(() => email = newValue);
               }),
             ),
+            const Divider(),
             _buildEditableField(
               label: 'Phone',
               value: phone.isEmpty ? 'Please enter your phone number' : phone,
               onEdit: () => _showEditDialog('Phone', phone, (newValue) {
                 setState(() => phone = newValue);
-              }),
+              }, keyboardType: TextInputType.number),
             ),
+            const Divider(),
             _buildEditableField(
               label: 'Date of Birth',
               value: dateOfBirth.isEmpty ? 'Please enter your date of birth' : dateOfBirth,
-              onEdit: () => _showEditDialog('Date of Birth', dateOfBirth, (newValue) {
-                setState(() => dateOfBirth = newValue);
-              }),
+              onEdit: _showDatePicker,
             ),
+            const Divider(),
             _buildEditableField(
               label: 'Gender',
-              value: gender.isEmpty ? 'Please enter your gender' : gender,
-              onEdit: () => _showEditDialog('Gender', gender, (newValue) {
-                setState(() => gender = newValue);
-              }),
+              value: gender.isEmpty ? 'Please select your gender' : gender,
+              onEdit: _showGenderPicker,
             ),
           ],
         ),
@@ -191,13 +236,21 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   }) {
     return InkWell(
       onTap: onEdit,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          Text(value, style: const TextStyle(fontSize: 16)),
-          const Icon(Icons.edit, color: Colors.blue),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Row(
+              children: [
+                Text(value, style: const TextStyle(fontSize: 16)),
+                const SizedBox(width: 10),
+                const Icon(Icons.edit, color: Colors.blue),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
