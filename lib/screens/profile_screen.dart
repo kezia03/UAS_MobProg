@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'changepw_screen.dart';
+import 'package:polylingo/screens/landing_page.dart';
+//import 'changepw_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final String username;
@@ -161,7 +162,7 @@ class ProfileScreen extends StatelessWidget {
         } else if (title == 'Change Password') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const ChangePwScreen()),
+            MaterialPageRoute(builder: (context) => const LandingPage()), //nanti ganti ke ChangePwScreen
           );
         } else if (title == 'Application Settings') {
           Navigator.pushNamed(context, '/appSettings'); // Navigate to the AppSetScreen

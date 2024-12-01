@@ -6,7 +6,7 @@ import 'screens/home_screen.dart';
 import 'screens/favourites_screen.dart';
 import 'screens/personal_screen.dart';
 import 'screens/accsecurity_screen.dart';
-import 'screens/about_screen.dart';
+//import 'screens/about_screen.dart';
 import 'screens/appset_screen.dart';
 import 'screens/verification_screen.dart';
 import 'screens/forgotpw_screen.dart';
@@ -91,7 +91,7 @@ class PolylingoApp extends StatelessWidget {
             phoneNumber: args['phoneNumber'], // Tetap nullable
           );
         },
-        '/about': (context) => const AboutScreen(),
+        //'/about': (context) => const AboutScreen(),
         '/appSettings': (context) => const AppSetScreen(),
         '/verification': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -105,7 +105,7 @@ class PolylingoApp extends StatelessWidget {
           final email = args['email']; // Ambil nilai email dari Map
           return VerifyCodePWScreen(email: email); // Passing email ke VerifyCodePWScreen
         },
-        '/set-new-password': (context) => ChangePasswordPage(),
+        '/set-new-password': (context) => const SetNewPasswordScreen(),
       },
       // Default page if the route does not exist
       onUnknownRoute: (settings) => MaterialPageRoute(
