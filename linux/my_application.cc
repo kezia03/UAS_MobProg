@@ -40,11 +40,25 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
     gtk_header_bar_set_title(header_bar, "uasmoprogwilli");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
     gtk_window_set_title(window, "uasmoprogwilli");
+<<<<<<< HEAD
+=======
+=======
+    gtk_header_bar_set_title(header_bar, "uas_mobprog");
+    gtk_header_bar_set_show_close_button(header_bar, TRUE);
+    gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
+  } else {
+    gtk_window_set_title(window, "uas_mobprog");
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
   }
 
   gtk_window_set_default_size(window, 1280, 720);

@@ -5,7 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
+<<<<<<< HEAD
 	<string>Uasmoprogwilli</string>
+=======
+<<<<<<< HEAD
+	<string>Uasmoprogwilli</string>
+=======
+	<string>Uas Mobprog</string>
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +21,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
+<<<<<<< HEAD
 	<string>uasmoprogwilli</string>
+=======
+<<<<<<< HEAD
+	<string>uasmoprogwilli</string>
+=======
+	<string>uas_mobprog</string>
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

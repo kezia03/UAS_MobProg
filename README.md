@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 # uasmoprogwilli
+=======
+<<<<<<< HEAD
+# uasmoprogwilli
+=======
+# uas_mobprog
+>>>>>>> ddfddaf7981d6b446fd005ec547a7e45ac383fba
+>>>>>>> 0ece2d6c8abbff0a63999c7c16dd4705f085f749
 
 A new Flutter project.
 
