@@ -1,115 +1,150 @@
 import 'package:flutter/material.dart';
-import 'screens/landing_page.dart';
-import 'screens/login_screen.dart';
-import 'screens/signup_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/favourites_screen.dart';
-import 'screens/personal_screen.dart';
-import 'screens/accsecurity_screen.dart';
-import 'screens/about_screen.dart';
-import 'screens/appset_screen.dart';
-import 'screens/verification_screen.dart';
-import 'screens/forgotpw_screen.dart';
-import 'screens/setnewpw_screen.dart';
-import 'screens/verifycodepw_screen.dart';
-import 'screens/splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-void main() async {
-  // Pastikan widget binding sudah diinisialisasi
-  WidgetsFlutterBinding.ensureInitialized();
+class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
 
-  // Inisialisasi Firebase sebelum menjalankan aplikasi
-  await Firebase.initializeApp();
-
-
-  runApp(const PolylingoApp());
+  @override
+  _LandingPageState createState() => _LandingPageState();
 }
 
-class PolylingoApp extends StatelessWidget {
-  const PolylingoApp({super.key});
+class _LandingPageState extends State<LandingPage> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  final List<Map<String, String>> _onboardingContent = [
+    {
+      "title": "Belajar dengan Cepat",
+      "description": "Pelajari bahasa baru dengan metode yang efektif dan efisien.",
+    },
+    {
+      "title": "Banyak Pilihan Bahasa",
+      "description": "Dapatkan akses ke berbagai bahasa populer di seluruh dunia.",
+    },
+    {
+      "title": "Tingkatkan Percakapan",
+      "description": "Berlatih berbicara dengan native speaker dan kuasai aksen asli.",
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Polylingo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: const Color(0xFF4B61DD),
-        scaffoldBackgroundColor: const Color(0xFF4B61DD),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF4B61DD),
-          centerTitle: true,
-          elevation: 0,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4B61DD),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Tulisan Polylingo di tengah atas
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Text(
+                  'Polylingo',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-            textStyle: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            Column(
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index;
+                      });
+                    },
+                    itemCount: _onboardingContent.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 80),
+                            Text(
+                              _onboardingContent[index]["title"]!,
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              _onboardingContent[index]["description"]!,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.white70,
+                                height: 1.5,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _onboardingContent.length,
+                    (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                      width: _currentPage == index ? 12.0 : 8.0,
+                      height: 8.0,
+                      decoration: BoxDecoration(
+                        color: _currentPage == index
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF4B61DD),
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                    ),
+                    child: Text(
+                      _currentPage == _onboardingContent.length - 1
+                          ? 'Mulai Belajar'
+                          : 'Lanjutkan',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
+          ],
         ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFF4B61DD).withOpacity(0.1),
-          labelStyle: const TextStyle(color: Color(0xFF4B61DD)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-      initialRoute: '/splash',
-      routes: {
-        '/splash': (context) => const SplashScreen(),
-        '/landing': (context) => const LandingPage(),
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignUpScreen(),        
-        '/home': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-          return HomeScreen(
-            username: args['username'],
-            email: args['email'],
-          );
-        },
-        '/favourites': (context) => const FavouritesScreen(),
-        '/personal': (context) => const PersonalScreen(),
-        '/accountSecurities': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-          if (args == null || !args.containsKey('email')) {
-            throw Exception("Email argument is required for this screen.");
-          }
-
-          return AccountSecuritiesScreen(
-            email: args['email'] ?? 'unknown@example.com', // Default jika null
-            phoneNumber: args['phoneNumber'], // Tetap nullable
-          );
-        },
-        '/about': (context) => const AboutScreen(),
-        '/appSettings': (context) => const AppSetScreen(),
-        '/verification': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          return VerificationScreen(
-            email: args['email'],  // Passing email argument to VerificationScreen
-          );
-        },
-        '/forgotpassword': (context) => const ForgotPasswordScreen(),
-        '/verify-code': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          final email = args['email']; // Ambil nilai email dari Map
-          return VerifyCodePWScreen(email: email); // Passing email ke VerifyCodePWScreen
-        },
-        '/set-new-password': (context) => SetNewPasswordScreen(),
-      },
-      // Default page if the route does not exist
-      onUnknownRoute: (settings) => MaterialPageRoute(
-        builder: (context) => const LandingPage(),
       ),
     );
   }
