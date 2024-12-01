@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart'; 
-import 'search_screen.dart'; // Import SearchScreen
-import 'favourites_screen.dart';
-import 'english_course_page.dart'; // Import halaman EnglishCoursePage
-import 'japanese_course_page.dart'; // Import halaman JapaneseCoursePage
-import 'spanish_course_page.dart'; // Import halaman SpanishCoursePage
 import 'package:translator/translator.dart';
+import 'package:polylingo/screens/search_screen.dart';
+import 'package:polylingo/screens/favourites_screen.dart';
+import 'package:polylingo/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String username; // Tambahkan username
-  const HomeScreen({super.key, required this.username});
+  final String username;
+  final String email;
+  final String? phoneNumber;
+
+  const HomeScreen({
+    super.key,
+    required this.username,
+    required this.email,
+    this.phoneNumber,
+  });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -22,7 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
     HomeScreenContent(username: widget.username), // Teruskan username
     const SearchScreen(),
     const FavouritesScreen(),
-    const ProfileScreen(),
+    ProfileScreen(
+      username: widget.username, // Pastikan username diteruskan
+      userEmail: widget.email, // Pastikan email diteruskan
+      userPhoneNumber: widget.phoneNumber, // Pastikan phoneNumber diteruskan
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -45,8 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favourites'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favourites'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
@@ -96,6 +104,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     {'name': 'Translation', 'icon': Icons.translate, 'color': 0xFF26A69A},
   ];
 
+
   List<Map<String, dynamic>> courses = [
     {'name': 'Japanese', 'flag': 'assets/japan_flag.png'},
     {'name': 'English', 'flag': 'assets/us_flag.png'},
@@ -134,31 +143,22 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
 
   Future<void> _translateUI(String targetLang) async {
     try {
-      final hello = await translator.translate('Hello',
-          to: targetLang); 
-      final categories =
-          await translator.translate('Categories', to: targetLang);
-      final courses = await translator
-          .translate('What do you want to learn today?', to: targetLang);
-      final noCourses =
-          await translator.translate('No courses found.', to: targetLang);
-      final searchPlaceholder =
-          await translator.translate('Search Courses', to: targetLang);
+      final hello = await translator.translate('Hello', to: targetLang); // Terjemahkan hanya 'Hello'
+      final categories = await translator.translate('Categories', to: targetLang);
+      final courses = await translator.translate('What do you want to learn today?', to: targetLang);
+      final noCourses = await translator.translate('No courses found.', to: targetLang);
+      final searchPlaceholder = await translator.translate('Search Courses', to: targetLang);
 
       // Terjemahkan kategori
-      final translatedCategories =
-          await Future.wait(this.categories.map((category) async {
-        final translatedName =
-            await translator.translate(category['name'], to: targetLang);
-        print(
-            'Translated ${category['name']} to ${translatedName.text}'); // Debug log
-        return {...category, 'name': translatedName.text};
+      final translatedCategories = await Future.wait(this.categories.map((category) async {
+          final translatedName = await translator.translate(category['name'], to: targetLang);
+          print('Translated ${category['name']} to ${translatedName.text}'); // Debug log
+          return {...category, 'name': translatedName.text};
       }));
 
-      final translatedCourses =
-          await Future.wait(this.courses.map((course) async {
-        final translatedName =
-            await translator.translate(course['name']!, to: targetLang);
+
+      final translatedCourses = await Future.wait(this.courses.map((course) async {
+        final translatedName = await translator.translate(course['name']!, to: targetLang);
         return {'name': translatedName.text, 'flag': course['flag']};
       }));
 
@@ -166,13 +166,11 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         _translatedCategories = categories.text;
         _translatedCourses = courses.text;
         _translatedNoCourses = noCourses.text;
-        _translatedSearchPlaceholder =
-            searchPlaceholder.text;
+        _translatedSearchPlaceholder = searchPlaceholder.text; // Placeholder untuk pencarian
         this.categories = translatedCategories;
         this.courses = translatedCourses;
         _filteredCourses = translatedCourses;
-        _translatedGreeting =
-            '${hello.text}, ${widget.username}!';
+        _translatedGreeting = '${hello.text}, ${widget.username}!'; // Gabungkan hasil terjemahan dengan username
       });
     } catch (e) {
       print("Translation error: $e");
@@ -203,8 +201,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           const SizedBox(height: 20),
           Text(
             _translatedGreeting,
-            style: const TextStyle(
-                fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           const SizedBox(height: 20),
           _buildSearchField(),
@@ -219,21 +216,20 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       children: [
         const Text(
           'Polylingo',
-          style: TextStyle(
-              fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         PopupMenuButton<String>(
           icon: const Icon(Icons.g_translate, color: Colors.white),
           onSelected: (String value) {
-            _translateUI(value); 
+              _translateUI(value); // Pastikan value di sini adalah kode bahasa
           },
           itemBuilder: (BuildContext context) {
-            return [
-              const PopupMenuItem(value: 'en', child: Text('English')),
-              const PopupMenuItem(value: 'es', child: Text('Spanish')),
-              const PopupMenuItem(value: 'id', child: Text('Indonesian')),
-              const PopupMenuItem(value: 'ja', child: Text('Japanese')),
-            ];
+              return [
+                  const PopupMenuItem(value: 'en', child: Text('English')),
+                  const PopupMenuItem(value: 'es', child: Text('Spanish')),
+                  const PopupMenuItem(value: 'id', child: Text('Indonesian')),
+                  const PopupMenuItem(value: 'ja', child: Text('Japanese')),
+              ];
           },
         ),
       ],
@@ -245,14 +241,12 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       onChanged: (value) {
         setState(() {
           _filteredCourses = courses
-              .where((course) =>
-                  course['name']!.toLowerCase().contains(value.toLowerCase()))
+              .where((course) => course['name']!.toLowerCase().contains(value.toLowerCase()))
               .toList();
         });
       },
       decoration: InputDecoration(
-        hintText:
-            _translatedSearchPlaceholder, // Gunakan placeholder yang sudah diterjemahkan
+        hintText: _translatedSearchPlaceholder, // Gunakan placeholder yang sudah diterjemahkan
         hintStyle: const TextStyle(color: Colors.grey),
         prefixIcon: const Icon(Icons.search, color: Colors.grey),
         filled: true,
@@ -299,8 +293,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   _currentPage = index;
                 });
               },
-              itemBuilder: (context, index) =>
-                  _buildImageCard(_getRealIndex(index)),
+              itemBuilder: (context, index) => _buildImageCard(_getRealIndex(index)),
             ),
           ),
         ),
@@ -330,30 +323,30 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     );
   }
 
-  Widget _buildCategoriesSection() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 15,
-      ),
-      itemCount: categories.length, // Gunakan categories global
-      itemBuilder: (context, index) {
-        final category = categories[index];
-        return _buildCategoryCircle(
-          name: category['name'],
-          icon: category['icon'],
-          color: Color(category['color']),
-        );
-      },
-    );
-  }
+Widget _buildCategoriesSection() {
+  return GridView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 4,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 15,
+    ),
+    itemCount: categories.length, // Gunakan categories global
+    itemBuilder: (context, index) {
+      final category = categories[index];
+      return _buildCategoryCircle(
+        name: category['name'],
+        icon: category['icon'],
+        color: Color(category['color']),
+      );
+    },
+  );
+}
 
-  Widget _buildCategoryCircle(
-      {required String name, required IconData icon, required Color color}) {
+
+  Widget _buildCategoryCircle({required String name, required IconData icon, required Color color}) {
     return GestureDetector(
       onTap: () => print('$name selected'),
       child: Column(
@@ -367,8 +360,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               shape: BoxShape.circle,
               border: Border.all(color: color, width: 2),
             ),
-            child:
-                Icon(icon, size: 25, color: color), // Ikon di dalam lingkaran
+            child: Icon(icon, size: 25, color: color), // Ikon di dalam lingkaran
           ),
           const SizedBox(height: 5),
           Text(
@@ -380,8 +372,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               fontWeight: FontWeight.w500,
             ),
             maxLines: 1, // Batasi teks ke satu baris
-            overflow: TextOverflow
-                .ellipsis, // Tambahkan "..." jika teks terlalu panjang
+            overflow: TextOverflow.ellipsis, // Tambahkan "..." jika teks terlalu panjang
           ),
         ],
       ),
@@ -394,37 +385,34 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       children: [
         Text(
           _translatedCourses,
-          style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF4B61DD)),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF4B61DD)),
         ),
         const SizedBox(height: 10),
         _filteredCourses.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    _translatedNoCourses,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              )
-            : Column(
-                children: _filteredCourses.map((course) {
-                  return Column(
-                    children: [
-                      _buildCourseItem(
-                          context, course['name']!, course['flag']!),
-                      const SizedBox(height: 10),
-                    ],
-                  );
-                }).toList(),
+        ? Padding(
+          padding: const EdgeInsets.only(top: 10),
+
+          child: Align(
+            alignment: Alignment.centerLeft, // Pastikan teks rata kiri
+            child: Text(
+              _translatedNoCourses, // Gunakan variabel yang sudah diterjemahkan
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
               ),
+            ),
+          ),
+        )
+        : Column(
+            children: _filteredCourses.map((course) {
+              return Column(
+                children: [
+                  _buildCourseItem(course['name']!, course['flag']!),
+                  const SizedBox(height: 10),
+                ],
+              );
+            }).toList(),
+          ),
       ],
     );
   }
@@ -457,8 +445,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             const SizedBox(width: 15),
             Text(
               capitalize(title), // Gunakan fungsi capitalize
-              style: TextStyle(
-                  fontSize: 18, color: color, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 18, color: color, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -466,27 +453,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     );
   }
 
-  Widget _buildCourseItem(
-      BuildContext context, String language, String flagPath) {
+Widget _buildCourseItem(String language, String flagPath) {
     return GestureDetector(
-      onTap: () {
-        if (language == 'Japanese') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => JapaneseCoursePage()),
-          );
-        } else if (language == 'English') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EnglishCoursePage()),
-          );
-        } else if (language == 'Spanish') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SpanishCoursePage()),
-          );
-        }
-      },
+      onTap: () => print('$language course selected'),
       child: Container(
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
